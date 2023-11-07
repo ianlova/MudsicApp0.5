@@ -2,6 +2,7 @@ import {React, useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Slider from '@react-native-community/slider';
+import ReproductorMinimizado from '../components/playerMinimized'
 // import PlayerControls from './PlayerControls'; // Crea este componente
 
 // const [position, setPosition] = React.useState(0);
@@ -19,9 +20,14 @@ const Reproductor = () => {
     };
   return (
     <View style={{
-      height: '96.5%',
-      alignItems: 'center',      
+      // height: '96.5%',
+      flex: 1,
+      height: '100%',
+      alignItems: 'center',   
+      backgroundColor: 'orange' ,
+      position: 'relative'  
     }}>
+      {/* <ReproductorMinimizado></ReproductorMinimizado> */}
       <Text style={PlayerStyles.youAreListening}>Estás escuchando</Text>
       <Text style={PlayerStyles.list}>Nombre de la lista de reproducción</Text>
       <Image

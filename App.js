@@ -11,7 +11,9 @@ export default function App() {
       
 
   }}>
+      <View style={{height:'0.9%'}} ></View>
       <Main />
+
       <StatusBar style="auto" />
     </View>
   );

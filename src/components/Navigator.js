@@ -6,6 +6,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import MoodsScreen from '../screens/MoodsScreen';
+import Search from '../screens/Search'
 
 const Tab = createBottomTabNavigator();
 
@@ -36,6 +37,16 @@ export const BottomTab = () => {
                 }}
             ></Tab.Screen>
             <Tab.Screen style={TabStyles.tabScreen}
+            name="Search"
+            component={Search}
+            options={{
+                tabBarLabel: '',
+                tabBarIcon: ({ color, size }) => (
+                    <FontAwesome style={TabStyles.icon} name="search" color={color} size={size} />
+                ),
+            }}
+        ></Tab.Screen>           
+            <Tab.Screen style={TabStyles.tabScreen}
                 name="Mood"
                 component={MoodsScreen}
                 options={{
@@ -54,7 +65,7 @@ export const BottomTab = () => {
                         <FontAwesome style={TabStyles.icon} name="user" color={color} size={size} />
                     ),
                 }}
-            ></Tab.Screen>           
+            ></Tab.Screen>
         </Tab.Navigator>
     )
 }

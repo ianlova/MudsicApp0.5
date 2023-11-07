@@ -5,7 +5,7 @@ const ReproductorMinimizado = () => {
   return (
     <View style={{
         display: 'flex',
-        flex: 1,
+        flex: 0.0015,
         backgroundColor: 'blue',
         height: 30,
         width: '100%',
