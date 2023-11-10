@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
         marginTop: 45,
         justifyContent: 'flex-start',
         alignContent: 'center',
-        textAlign: 'center'
+        textAlign: 'center',
+        backgroundColor: 'blue'
     },
     title: {
         fontSize: 24,
@@ -95,4 +96,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default LoginScreen;
+export default LoginScreen;

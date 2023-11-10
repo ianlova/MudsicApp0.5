@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
         fontSize:  12,
         fontWeight: '500',
         marginTop: 20,
+        color: '#f1f1f1',
         marginBottom: 10
     },
     cont:{
@@ -62,6 +63,7 @@ const styles = StyleSheet.create({
     },
     titleItem:{
         fontSize: 8,
+        color: '#f1f1f1',
         textAlign: 'center',
         fontWeight: '700'
     },
@@ -75,5 +77,6 @@ const styles = StyleSheet.create({
         borderRadius: 500
     }
 });
+
 
 export default PersonTastes

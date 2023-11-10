@@ -25,7 +25,7 @@ const auth = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toStri
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         });
-        console.log(response.data.access_token)
+        // console.log(response.data.access_token)
         return response.data.access_token
     } catch (error) {
         console.error(error);
@@ -45,7 +45,7 @@ export async function SpotifyRecommendations() {
                     },
                     });
                     const json = await response.json();
-                    console.log(json)
+                    // console.log(json)
                     data = (json);
                     return (data.tracks);
                 } catch (error) {
@@ -68,7 +68,7 @@ export async function Search(query) {
                 },
             });
             const json = await response.json();
-            console.log(json);
+            // console.log(json);
             return json;
         } catch (error) {
             console.error(error);

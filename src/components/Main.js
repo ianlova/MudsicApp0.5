@@ -1,4 +1,4 @@
-import {React, useRef} from 'react'
+import {React, useRef, useEffect} from 'react'
 import Constants from 'expo-constants'
 import Item from './Item'
 import Row from './Row'
@@ -10,10 +10,18 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { Rnd } from 'react-rnd';
 import DraggableComponent from '../components/moving'
 import { StyleSheet, Text, View, Image, Alert, TouchableNativeFeedback, FlatList, TouchableNativeFeedbackBase, ScrollView } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 import { BottomTab } from './Navigator';
 import HomeScreen from '../screens/HomeScreen'
 import { Animated, PanResponder, Dimensions } from 'react-native';
+// import { Animated, PanResponder, Dimensions, BackHandler } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack'
+import ListaUsuarios from '../backend/verUsuarios';
+import stacks from '../backend/stack'
+import Form from '../backend/Form';
+import Login from '../backend/Login';
+
+const Stack = createStackNavigator()
 
 
 
@@ -23,52 +31,57 @@ const windowWidth = Dimensions.get('window').width;
 const placeholderData = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const Main = () => {
-    const pan = useRef(new Animated.ValueXY()).current;
-    let lastY
-    let movido
-    const panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (event, gestureState) => {
-        if (movido) {
-          console.log(pan.getLayout())
-          pan.y.setValue(lastY)
-          Animated.event([null, { dy: pan.y }], { useNativeDriver: false })(event, gestureState);
-          movido=false
-        }
-          // console.log(pan.getLayout())
-          // pan.y.setValue(lastY)
-          Animated.event([null, { dy: pan.y }], { useNativeDriver: false })(event, gestureState);
-        // console.log(gestureState.dx)
-      },
-      onPanResponderRelease: () => {
-        Animated.spring(pan.y, {
-          toValue: pan.y._value < (windowHeight / 300) ? (windowHeight*-1.012) : (windowHeight*-0.0002950),
-          useNativeDriver: false,
-        }).start(() => {
-          movido = true
-          lastY = pan.y._value
-          console.log(lastY)
-          // Esto se ejecuta después de la animación
-          // pan.y.setValue(pan.getLayout);  // Restablece pan.y a 0
-          // console.log(pan.y._value)
-        });
-      },
-    });
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     BackHandler.exitApp(); // Cierra la aplicación
+  //     return true;
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
+
+  //   return () => backHandler.remove();
+  // }, []);
+  const MyTheme = {
+    ...DarkTheme,
+    color:{
+      ...DarkTheme.colors,
+      primary: '#f1f1f1',
+      card: '#141414',
+      text: '#878787',
+      border: '#404040',
+    }
+  }
   
     return(
-        <View style={{flex:1}}>
-              <View style={{flex: 1}}>
-                <NavigationContainer style={styles.container}>
-                  <BottomTab/>  
-                  {/* <PlayerMinimized/> */}
-                </NavigationContainer>
-              </View>
-          <Animated.View {...panResponder.panHandlers} style={[pan.getLayout(), { flex: 0.0015, width: '100%', height: '100000%'}]}>
-            <PlayerMinimized></PlayerMinimized>
-            <View style={{height:'1000%', position:'absolute', height: (windowHeight + (windowHeight*0.1)), width: windowWidth }}>
-                <Reproductor></Reproductor>
-            </View>
-        </Animated.View>
+        <View style={{flex:1, backgroundColor: '#404040'}}>
+          
+          {/* <Stack.Navigator>
+              <Stack.Screen 
+              name="login"
+              component={Login}
+              options={{title: "iniciar sesion..."}}/>
+              <Stack.Screen
+              name="main"
+              options={{title: "iniciar sesion..."}}>
+              </Stack.Screen>
+          </Stack.Navigator> */}
+                <View style={{flex: 1}}>
+                  <NavigationContainer style={styles.container} theme={MyTheme}>
+                    {/* <PlayerMinimized/> */}
+                    {/* <Stack.Navigator initialRouteName={Login}> */}
+                    <Stack.Navigator initialRouteName={"Navegador"}>
+                      <Stack.Screen name="Login" component={Login}
+                      options={{ gestureEnabled: false, headerShown: false }} />
+                      <Stack.Screen name="Register" component={Form}
+                      options={{ gestureEnabled: false, headerShown: false }} />
+                      <Stack.Screen name='Navegador' component={BottomTab} 
+                      options={{ gestureEnabled: false, headerShown: false }} />
+                    </Stack.Navigator>
+                  </NavigationContainer>
+                </View>
         </View>
     )
 } 

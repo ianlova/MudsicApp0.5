@@ -3,7 +3,7 @@ import Constants from 'expo-constants'
 import { StyleSheet, Text, View, Alert, TouchableNativeFeedback, Image } from 'react-native'
 
 const itemHistorial = ({img, nombreItem, descItem}) => {
-    console.log(img)
+    // console.log(img)
     return (
         <View style={ItemStyles.container}>
             { <Image

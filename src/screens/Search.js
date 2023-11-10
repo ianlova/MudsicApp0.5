@@ -12,7 +12,7 @@ const Search = ({ navigation }) => {
     const [albums, setAlbums] = useState({});
 
     const handleSearch = async () => {
-        const results = await Spotify.Search(query);
+        const results = await Spotify.Search(query&&query);
         setData(results);
         setSongs(results.tracks);
         setArtists(results.artists);

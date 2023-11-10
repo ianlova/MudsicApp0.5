@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent: 'center',
         alignItems: 'center',
-        height: 120,
+        height: 125,
     },
     title:{
         padding: 5,
@@ -34,7 +34,8 @@ const styles = StyleSheet.create({
         fontSize:  12,
         fontWeight: '500',
         marginTop: 20,
-        marginBottom: 5
+        marginBottom: 10,
+        color: '#f1f1f1',
     },
     bar: {
         flexDirection: 'row',
@@ -42,13 +43,13 @@ const styles = StyleSheet.create({
         width: '85%',
     },
     stable: {
-        backgroundColor: 'green',
+        backgroundColor: '#f1f1f1',
         height: 10,
         borderTopLeftRadius: 25,      // Para el borde superior izquierdo
         borderBottomLeftRadius: 25, 
     },
     variable: {
-        backgroundColor: 'blue',
+        backgroundColor: '#404040',
         height: 10,
         borderTopRightRadius: 25,
         borderBottomRightRadius: 25
@@ -56,14 +57,15 @@ const styles = StyleSheet.create({
     valoresCont:{
         flexDirection: 'row',
         width: '85%',
-        justifyContent: 'space-between',
-        marginTop: -3
+        justifyContent: 'space-between',        
     },
     valores:{
         fontSize: 10,
         fontWeight: '600',
-        textTransform: 'lowercase'
+        textTransform: 'lowercase',
+        color: '#f1f1f1',
     }
 });
+
 
 export default PersonCharts

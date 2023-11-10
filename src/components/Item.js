@@ -24,39 +24,41 @@ const Item = ({img, nombreItem, descItem}) => {
 export default Item
 
 const ItemStyles = StyleSheet.create({    
-    container: {
-        margin: 5,
-        padding: 7,
-        flexDirection: 'column', // Alinea la imagen y el texto en fila
-        alignItems: 'center',
-        backgroundColor: 'gray',
-        width: 150,
-        height: 200,
-      },
-      img: {
-        width: 130,
-        height: 130,
-      },
-      textContainer: {
-        flex: 1, // El texto debe ocupar todo el espacio disponible
-        maxWidth: 170,
-        height: 80,
-        justifyContent: 'center',
-      },
-      nameItem: {
-        fontSize: 12,
-        paddingHorizontal: 5,
-        color: 'white',
-        textAlign: 'center',
-        marginTop: 5,
-        fontWeight: '800'
-      },
-      descItem: {
-        fontSize: 11,
-        fontStyle: 'italic',
-        paddingHorizontal: 7,
-        marginTop: -5,
-        color: 'white',
-        textAlign: 'center'
-      },
+  container: {
+      margin: 5,
+      padding: 7,
+      flexDirection: 'column', // Alinea la imagen y el texto en fila
+      alignItems: 'center',
+      backgroundColor: '#2a2a2a',
+      width: 150,
+      height: 200,
+      borderRadius: 4         
+    },
+    img: {
+      width: 130,
+      height: 130,
+      borderRadius: 4
+    },
+    textContainer: {
+      flex: 1, // El texto debe ocupar todo el espacio disponible
+      maxWidth: 170,
+      height: 80,
+      justifyContent: 'center',
+    },
+    nameItem: {
+      fontSize: 12,
+      paddingHorizontal: 5,
+      color: '#f1f1f1',
+      textAlign: 'center',
+      marginTop: 5,
+      fontWeight: '800'
+    },
+    descItem: {
+      fontSize: 11,
+      fontStyle: 'italic',
+      paddingHorizontal: 7,
+      marginTop: -3,
+      color: '#f4f4f4',
+      textAlign: 'center'
+    },
 })

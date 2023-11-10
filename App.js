@@ -7,14 +7,10 @@ export default function App() {
   return (
     <View style={{
       height: '100%',
-      
-      
-
   }}>
-      <View style={{height:'0.9%'}} ></View>
+      {/* <StatusBar style="light" /> */}
+      {/* <View style={{height:'0.9%'}} ></View> */}
       <Main />
-
-      <StatusBar style="auto" />
     </View>
   );
 }

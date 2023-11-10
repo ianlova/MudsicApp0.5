@@ -2,7 +2,6 @@ import {View, Text, ScrollView} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Row from '../components/Row';
 import Player from './Player';
-import PlayerMinimized from './playerMinimized';
 import * as Spotify from '../data/Spotify'
 
 const HomeScreen = ({ navigation }) => {    

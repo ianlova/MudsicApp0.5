@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export  async function search(query) {
-    const url = 'https://deezerdevs-deezer.p.rapidapi.com/search?q=sexy%20villain';
+    const url = `https://deezerdevs-deezer.p.rapidapi.com/search?q=${query}`;
     const options = {
         method: 'GET',
         headers: {
@@ -34,7 +34,7 @@ export  async function getArtist(query) {
         const response = await fetch(url, options);
         const result = await response.json();
         // console.log(result);
-        console.log(result.tracks.hits);
+        return(result);
     } catch (error) {
         console.error(error);
     }

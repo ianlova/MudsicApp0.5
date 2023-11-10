@@ -1,5 +1,5 @@
 import {View, Text, Image, StyleSheet, ScrollView} from 'react-native';
-import React from 'react';
+import {React, useEffect, useState} from 'react';
 import Row from '../components/Row';
 import PersonCharts from '../components/personCharts';
 import PersonTastes from '../components/personTastes';
@@ -9,7 +9,8 @@ import itemPlaylist from '../components/itemPlaylist';
 import ListHistorial from '../components/listHistorial';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
+ 
+let id = 1
 
 const artistasData = [
     {
@@ -72,23 +73,47 @@ const generosData = [
 ];
 
 const ProfileScreen = (navigation) => {
-    let data = Spotify.SpotifyRecommendations()
+    // let data = Spotify.SpotifyRecommendations()
+    const [data, setData] = useState({})
+    const [userName, setUserName] = useState('')
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch(`http://192.168.100.57:3001/api/usuarios/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            if (!response.ok) {
+              throw new Error('La solicitud no fue exitosaa');
+            }
+            const dato = await response.json()
+            setUserName(dato[0].Nbr_u)
+            setData(dato)
+            // console.log(data);
+        };
+        fetchData(); // Llama a la función asincrónica para obtener los datos
+      }, []);
+    
     return(
         <ScrollView overScrollMode="never" style={{height: 1600}}>
         <View style={ProfileStyles.container}>
             <View style={ProfileStyles.profile}>
-                <Image source={require('../imgs/800px-Clics-modernos-charly-garcia-front.jpg')} 
-                style={ProfileStyles.profileImg}/>
-                <View style={{marginLeft: 10, marginTop: -70, width: '60%'}}>
-                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>Nombre usuario</Text>
-                    <Text>Mood</Text>
-                </View>
-            </View>
+                    <Image source={require('../imgs/800px-Clics-modernos-charly-garcia-front.jpg')} 
+                    style={ProfileStyles.profileImg}/>
+                    <View style={{marginLeft: 15, marginTop: -15, width: 'auto', color: 'white'}}>
+                        <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{userName}</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', width: 'auto', justifyContent: 'space-between'}}>
+                            <Text style={{color: 'white'}}>Mood</Text>
+                            <TouchableOpacity><Text style={{color: '#c4c4c4', fontSize: 14}}>Ajustes</Text></TouchableOpacity>
+                        </View>
+                    </View>
+            </View>           
             <View>
                 <View style={ProfileStyles.sectionContainer}>
                     <Text style={ProfileStyles.sectionTitle}>Historial</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        <ListHistorial navigation={navigation} tituloSeccion="Canciones" data={data} />
+                        <ListHistorial navigation={navigation}/>
                         <Text>{}</Text>
                     </ScrollView>
                 </View>
