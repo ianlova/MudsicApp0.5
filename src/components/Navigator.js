@@ -24,6 +24,20 @@ const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
 export const BottomTab = () => {
+    
+//   useEffect(() => {
+//     const backAction = () => {
+//       BackHandler.exitApp(); // Cierra la aplicación
+//       return true;
+//     };
+
+//     const backHandler = BackHandler.addEventListener(
+//       "hardwareBackPress",
+//       backAction
+//     );
+
+//     return () => backHandler.remove();
+//   }, []);
     const [isPlaying, setIsPlaying] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [showPositiveEmojis, setShowPositiveEmojis] = useState(true); // Estado para alternar entre emojis positivos y negativos
@@ -38,18 +52,9 @@ export const BottomTab = () => {
     };
     const pan = useRef(new Animated.ValueXY()).current;
     let lastY
-    let movido
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gestureState) => {
-        if (movido) {
-          console.log(pan.getLayout())
-          pan.y.setValue(lastY)
-          Animated.event([null, { dy: pan.y }], { useNativeDriver: false })(event, gestureState);
-          movido=false
-        }
-          // console.log(pan.getLayout())
-          // pan.y.setValue(lastY)
           Animated.event([null, { dy: pan.y }], { useNativeDriver: false })(event, gestureState);
         // console.log(gestureState.dx)
       },

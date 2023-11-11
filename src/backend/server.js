@@ -18,7 +18,6 @@ const db = mysql.createConnection({
   database: 'mudsic2',
   connectTimeout: 30000 // Esto es 30 segundos
 });
-
 db.connect((err) => {
   console.log('conectando')
   if (err) {
@@ -26,7 +25,6 @@ db.connect((err) => {
   }
   console.log('Conexión a la base de datos MySQL establecida');
 });
-
 app.get('/api/usuarios', (req, res) => {
     try {
       const sql = 'SELECT * FROM usuarios';
@@ -40,8 +38,6 @@ app.get('/api/usuarios', (req, res) => {
       console.log(error)
     }
   });
-  
-
   // Ruta para obtener un usuario por su ID
   app.get('/api/usuarios/:id', (req, res) => {
     const { id } = req.params;
@@ -89,7 +85,6 @@ app.get('/api/usuarios', (req, res) => {
       res.json(result);
     });
   });
-    
   // Ruta para obtener un album por el nombre
   app.get('/api/albumes/:name', (req, res) => {
     const { name } = req.params;
@@ -102,7 +97,6 @@ app.get('/api/usuarios', (req, res) => {
       res.json(result);
     });
   });
-    
   // Ruta para agregar un nuevo usuario
   app.post('/api/usuarios', (req, res) => {
     const { nombre, correo, contrasenna } = req.body;
@@ -118,7 +112,6 @@ app.get('/api/usuarios', (req, res) => {
         });
     });
 });
-
 // app.post('/api/subirImagen', (req, res) => {
 //   const { img } = req.body;
 //   const sql = 'INSERT INTO usuarios (Img_u) VALUES (?)';
@@ -146,7 +139,6 @@ app.get('/api/usuarios', (req, res) => {
       res.json({ message: 'Usuario actualizado exitosamente', id });
     });
   });
-  
   // Ruta para eliminar un usuario
   app.delete('/api/usuarios/:id', (req, res) => {
     const { id } = req.params;
@@ -158,7 +150,6 @@ app.get('/api/usuarios', (req, res) => {
       res.json({ message: 'Usuario eliminado exitosamente', id });
     });
   });
-
   //Login
   app.post("/api/login", (req, res) => {
     const {nombre, correo, contrasenna } = req.body
@@ -174,7 +165,6 @@ app.get('/api/usuarios', (req, res) => {
       }
     })
   })
-
   app.listen(port, () => {
     console.log(`Servidor Express en ejecución en el puerto ${port}`);
   });

@@ -13,50 +13,30 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 
 const ReproductorMinimizado = () => {
-    const [modalVisible, setModalVisible] = useState(false);
-    const [showPositiveEmojis, setShowPositiveEmojis] = useState(true); // Estado para alternar entre emojis positivos y negativos
-
-    const emojisPositive = ['👍', '😍', '👍', '😈', '🤣', '😄', '🥳', '😴', '👹', '🚀'];
-    const emojisNegative = ['👎', '🤮', '💔', '😭', '😡', '😭'];
-
-    const emojisToShow = showPositiveEmojis ? emojisPositive : emojisNegative;
-
-    const toggleLikeDislike = () => {
-        setShowPositiveEmojis(!showPositiveEmojis);
-    };
-  const [trackIndex, setTrackIndex] = useState(0);
-  const [trackTitle, setTrackTitle] = useState('');
-  const [trackArtist, setTrackArtist] = useState();
-  const [trackArtwork, setTrackArtwork] = useState();  
-  const playBackState = usePlaybackState();
-  const progress = useProgress();
-    const [isPlaying, setIsPlaying] = useState(false);
-    const events = [
-        Event.PlaybackState,
-        Event.RemotePlay,
-        Event.RemotePause,
-        // Agrega aquí los eventos que necesites
-      ];
-    
-    useTrackPlayerEvents(events, async (event) => {
-        // Aquí puedes manejar lo que sucede cuando se dispara un evento
-        // Por ejemplo, puedes verificar el tipo de evento y actuar en consecuencia
-        switch (event.type) {
-          case Event.PlaybackState:
-            // Manejar cambio de estado de reproducción
-            // console.log('evento row:')
-            // console.log(event.state)
-            if (event.state=='playing') {
-                setIsPlaying(true);
-                await gettrackdata()
-            }
-            if (event.state=='paused') {
-                setIsPlaying(false);
-
-            }
-            break;
-        }
-    })
+const [modalVisible, setModalVisible] = useState(false);
+const [showPositiveEmojis, setShowPositiveEmojis] = useState(true); // Estado para alternar entre emojis positivos y negativos
+const emojisPositive = ['👍', '😍', '👍', '😈', '🤣', '😄', '🥳', '😴', '👹', '🚀'];
+const emojisNegative = ['👎', '🤮', '💔', '😭', '😡', '😭'];
+const emojisToShow = showPositiveEmojis ? emojisPositive : emojisNegative;
+const [trackIndex, setTrackIndex] = useState(0);
+const [trackTitle, setTrackTitle] = useState('');
+const [trackArtist, setTrackArtist] = useState();
+const [trackArtwork, setTrackArtwork] = useState();  
+const playBackState = usePlaybackState();
+const progress = useProgress();
+const [isPlaying, setIsPlaying] = useState(false);
+const events = [
+    Event.PlaybackState,
+    Event.RemotePlay,
+    Event.RemotePause,
+    Event.RemoteSeek,
+    Event.RemotePrevious,
+    Event.RemoteNext,
+    // Agrega aquí los eventos que necesites
+];
+const toggleLikeDislike = () => {
+    setShowPositiveEmojis(!showPositiveEmojis);
+};
     const getQueue = async () => {
         const queue = await TrackPlayer.getQueue();
         console.log(queue);
@@ -65,14 +45,13 @@ const ReproductorMinimizado = () => {
         // TrackPlayer.addEventListener('playback-state', (state) => {console.log(state)})
         let trackIndex = await TrackPlayer.getCurrentTrack();
         let trackObject = await TrackPlayer.getTrack(trackIndex);
-        console.log(trackIndex);
-        console.log(trackObject);
+        // console.log(trackIndex);
+        // console.log(trackObject);
         setTrackIndex(trackIndex);
         setTrackTitle(trackObject.title);
         setTrackArtist(trackObject.artist);
         setTrackArtwork(trackObject.artwork);
       };
-    
     const nexttrack = async () => {
         if (trackIndex < trackIndex-1) {
           await TrackPlayer.skipToNext();
@@ -86,22 +65,20 @@ const ReproductorMinimizado = () => {
 
         ;
       };
-    
-      const previoustrack = async () => {
-          if (progress.position<5) {
-            if (trackIndex > 0) {
-                await TrackPlayer.skipToPrevious();
-                await gettrackdata();
-                await TrackPlayer.play()
-            };
+    const previoustrack = async () => {
+        if (progress.position<5) {
+        if (trackIndex > 0) {
+            await TrackPlayer.skipToPrevious();
+            await gettrackdata();
+            await TrackPlayer.play()
+        };
           }else{
             TrackPlayer.seekTo(0)
           }
           // console.log(progress)
       };
-    
     const togglePlayPause = async () => {
-        const currentTrack = await TrackPlayer.getCurrentTrack();
+        const currentTrack = await TrackPlayer.getActiveTrackIndex();
         if (currentTrack != null) {
             if ((playBackState.state == State.Paused) || (playBackState.state == State.Ready)) {
             setIsPlaying(true);
@@ -114,6 +91,33 @@ const ReproductorMinimizado = () => {
 
         }
     };
+    useTrackPlayerEvents(events, async (event) => {
+        switch (event.type) {
+            case Event.PlaybackState:
+              if (event.state=='playing') {
+                  setIsPlaying(true);
+                  await gettrackdata()
+              }else{
+                  setIsPlaying(false);
+              }
+              break;
+            case Event.RemotePlay:
+                await TrackPlayer.play()
+            break;
+            case Event.RemotePause:
+                await TrackPlayer.pause()
+            break;
+            case Event.RemoteNext:
+                await TrackPlayer.skipToNext()
+            break;
+            case Event.RemotePrevious:
+                await TrackPlayer.skipToPrevious()
+            break;
+            // case Event.RemoteSeek:
+                // await TrackPlayer.seekTo()
+            break;
+        }
+    })
     return (
     <View style={PlayerStyles.container}>
         <View style={PlayerStyles.left}>

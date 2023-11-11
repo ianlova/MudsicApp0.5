@@ -37,17 +37,11 @@ const Reproductor = () => {
   const [trackArtist, setTrackArtist] = useState();
   const [trackArtwork, setTrackArtwork] = useState();  
   const playbackState = usePlaybackState();
-    const [modalVisible, setModalVisible] = useState(false);
-    const [showPositiveEmojis, setShowPositiveEmojis] = useState(true); // Estado para alternar entre emojis positivos y negativos
-
-    const emojisPositive = ['👍', '😍', '👍', '😈', '🤣', '😄', '🥳', '😴', '👹', '🚀'];
-    const emojisNegative = ['👎', '🤮', '💔', '😭', '😡', '😭'];
-
-    const emojisToShow = showPositiveEmojis ? emojisPositive : emojisNegative;
-
-    const toggleLikeDislike = () => {
-        setShowPositiveEmojis(!showPositiveEmojis);
-    };
+  const [modalVisible, setModalVisible] = useState(false);
+  const [showPositiveEmojis, setShowPositiveEmojis] = useState(true); // Estado para alternar entre emojis positivos y negativos
+  const emojisPositive = ['👍', '😍', '👍', '😈', '🤣', '😄', '🥳', '😴', '👹', '🚀'];
+  const emojisNegative = ['👎', '🤮', '💔', '😭', '😡', '😭'];
+  const emojisToShow = showPositiveEmojis ? emojisPositive : emojisNegative;
   const progress = useProgress();
   const podcasts = [
     {
@@ -67,91 +61,95 @@ const Reproductor = () => {
     Event.PlaybackState,
     Event.RemotePlay,
     Event.RemotePause,
+    Event.RemoteNext,
+    Event.RemotePrevious,
+    Event.RemoteSeek,
     // Agrega aquí los eventos que necesites
   ];
-
-const setupPlayer = async () => {
-        try {
-          if (TrackPlayer == {}) {
-            console.log(TrackPlayer)
-          }
-      await TrackPlayer.setupPlayer({
+  const setupPlayer = async () => {
+    try {
+      await TrackPlayer.setupPlayer();
+      await TrackPlayer.updateOptions({
         capabilities: [
           Capability.Play,
           Capability.Pause,
           Capability.SkipToNext,
           Capability.SeekTo,
-          Capability.SkipToPrevious
+          // Capability.PlayFromId,
+          Capability.Stop,
+          Capability.Skip,
+          Capability.JumpBackward,
+          Capability.JumpForward,
+          Capability.SkipToPrevious,
         ],
-    notificationCapabilities: [
-      Capability.Play,
-      Capability.Pause,
-      Capability.SkipToNext,
-      Capability.SkipToPrevious,
-    ],
-    compactCapabilities: [
-      Capability.Play,
-      Capability.Pause,
-      Capability.Stop,
-      Capability.SkipToNext,
-      Capability.SkipToPrevious,
-      Capability.SeekTo,
-    ],
       });
-      await TrackPlayer.add(podcasts);
-      await gettrackdata();
+      // await TrackPlayer.add(podcasts);
+      // await gettrackdata();
       // await TrackPlayer.play();
     } catch (error) { console.log(error); }
   };
-  useEffect(async () => {
-    await setupPlayer();
+  useEffect(() => {
+    setupPlayer();
   }, []);
+    const toggleLikeDislike = () => {
+        setShowPositiveEmojis(!showPositiveEmojis);
+    };
 
+// useTrackPlayerEvents(events, async (event) => {
+//   if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
+//     const track = await TrackPlayer.getTrack(event.nextTrack);
+//     const {title, artwork, artist} = track;
+//     console.log(event.nextTrack);
+//     setTrackIndex(event.nextTrack);
+//     setTrackTitle(title);
+//     setTrackArtist(artist);
+//     setTrackArtwork(artwork&&artwork);
+//   }
+
+// })
 useTrackPlayerEvents(events, async (event) => {
-    // Aquí puedes manejar lo que sucede cuando se dispara un evento
-    // Por ejemplo, puedes verificar el tipo de evento y actuar en consecuencia
-    switch (event.type) {
+  // Aquí puedes manejar lo que sucede cuando se dispara un evento
+  // Por ejemplo, puedes verificar el tipo de evento y actuar en consecuencia
+  switch (event.type) {
       case Event.PlaybackState:
         // Manejar cambio de estado de reproducción
-        console.log('evento row:')
-        console.log(event.state)
         if (event.state=='playing') {
-          setIsPlaying(true);
-        }
-        if (event.state=='paused') {
-          setIsPlaying(false);
+            setIsPlaying(true);
+            await gettrackdata()
+        }else{
+            setIsPlaying(false);
         }
         break;
-    }
+      case Event.RemotePlay:
+          await TrackPlayer.play()
+      break;
+      case Event.RemotePause:
+          await TrackPlayer.pause()
+      break;
+      case Event.RemoteNext:
+          await TrackPlayer.skipToNext()
+      break;
+      case Event.RemotePrevious:
+          await TrackPlayer.skipToPrevious()
+      break;
+      // case Event.RemoteSeek:
+          // await TrackPlayer.seekTo()
+      default:
+        console.log(event)
+      break;
+  }
 })
-
-  // Función para iniciar el intervalo
-const seekingRight = async () => {
-    await TrackPlayer.pause()
-    await TrackPlayer.seekTo(progress.position + 1)
-    await TrackPlayer.play()
-    console.log((progress.position));
-    console.log((progress.position+ 1));
-}
-// // Función para detener el intervalo
-// const stopInterval = async () => {
-//   clearInterval(intervalId);
-//   intervalId = null;
-//   await TrackPlayer.play
-// }
-
-  useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-    if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
-      const track = await TrackPlayer.getTrack(event.nextTrack);
-      const {title, artwork, artist} = track;
-      // console.log(event.nextTrack);
-      setTrackIndex(event.nextTrack);
-      setTrackTitle(title);
-      setTrackArtist(artist);
-      setTrackArtwork(artwork&&artwork);
-    }
-  });
-
+  // useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
+  //   if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
+  //     const track = await TrackPlayer.getTrack(event.nextTrack);
+  //     const {title, artwork, artist} = track;
+  //     // console.log(event.nextTrack);
+  //     setTrackIndex(event.nextTrack);
+  //     setTrackTitle(title);
+  //     setTrackArtist(artist);
+  //     setTrackArtwork(artwork&&artwork);
+  //   }
+  // });
   const gettrackdata = async () => {
     let trackIndex = await TrackPlayer.getCurrentTrack();
     let trackObject = await TrackPlayer.getTrack(trackIndex);
@@ -162,7 +160,6 @@ const seekingRight = async () => {
     setTrackArtist(trackObject.artist);
     setTrackArtwork(trackObject.artwork);
   };
-
   const nexttrack = async () => {
     if (trackIndex < trackIndex-1) {
       await TrackPlayer.skipToNext();
@@ -172,10 +169,11 @@ const seekingRight = async () => {
     }else{
       await TrackPlayer.skip(0)
     }
+    // await gettrackdata();
     ;
   };
-
   const previoustrack = async () => {
+    // await gettrackdata();
       if (progress.position<5) {
         if (trackIndex > 0) {
             await TrackPlayer.skipToPrevious();
@@ -187,9 +185,6 @@ const seekingRight = async () => {
       }
       // console.log(progress)
   };
-  
-  
-
   const togglePlayPause = async () => {
     const currentTrack = await TrackPlayer.getCurrentTrack();
     if (currentTrack != null) {
@@ -200,15 +195,6 @@ const seekingRight = async () => {
         await TrackPlayer.pause();
         setIsPlaying(false);
       }
-      // if (playbackState === TrackPlayer.STATE_PLAYING) {
-      //   // Mostrar la UI para el estado de reproducción
-      //   console.log('pausa')
-      // } else if (playbackState === TrackPlayer.STATE_PAUSED) {
-      //   // Mostrar la UI para el estado de pausa
-      // } else {
-      //   // Manejar otros estados
-      // }
-      
     }
   };
   return (
@@ -221,7 +207,6 @@ const seekingRight = async () => {
       position: 'relative',
       paddingTop: '10%'
     }}>
-      {/* <ReproductorMinimizado></ReproductorMinimizado> */}
       <Text style={PlayerStyles.youAreListening}>Estás escuchando</Text>
       <Text style={PlayerStyles.list}>Nombre de la lista de reproducción</Text>
       <Image

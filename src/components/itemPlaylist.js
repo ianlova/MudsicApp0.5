@@ -58,5 +58,5 @@ const ItemStyles = StyleSheet.create({
         marginTop: -2,
         color: 'white',
         textAlign: 'center'
-      },
+    },
 })

@@ -24,7 +24,7 @@ const Login = ({navigation}) =>{
             contrasenna: contrasenna,
         };
 
-    fetch(`http://192.168.100.57:3001/api/login`, {
+    fetch(`http://10.0.9.220:3001/api/login`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',

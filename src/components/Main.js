@@ -31,19 +31,6 @@ const windowWidth = Dimensions.get('window').width;
 const placeholderData = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const Main = () => {
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     BackHandler.exitApp(); // Cierra la aplicación
-  //     return true;
-  //   };
-
-  //   const backHandler = BackHandler.addEventListener(
-  //     "hardwareBackPress",
-  //     backAction
-  //   );
-
-  //   return () => backHandler.remove();
-  // }, []);
   const MyTheme = {
     ...DarkTheme,
     color:{

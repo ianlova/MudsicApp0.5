@@ -28,13 +28,9 @@ const playBackState = usePlaybackState();
 // console.log(Event)
 const events = [
     Event.PlaybackState,
-    Event.RemotePlay,
-    Event.RemotePause,
     // Agrega aquí los eventos que necesites
 ];
 useTrackPlayerEvents(events, async (event) => {
-    // Aquí puedes manejar lo que sucede cuando se dispara un evento
-    // Por ejemplo, puedes verificar el tipo de evento y actuar en consecuencia
     switch (event.type) {
       case Event.PlaybackState:
         // Manejar cambio de estado de reproducción
@@ -44,36 +40,14 @@ useTrackPlayerEvents(events, async (event) => {
             await soundObject.unloadAsync();
         }
         if (event.state=='paused') {
-            await soundObject.unloadAsync();
+            await soundObject.playAsync();
         }
-        break;
-      case Event.RemotePlay:
-        // Manejar evento de reproducción remota
-        // console.log('remote:')
-        // console.log(event)
-
-        break;
-      case Event.RemotePause:
-        // Manejar evento de pausa remota
         break;
       // Asegúrate de manejar todos los eventos a los que te suscribiste
     }
   });
   
 async function Preview(url) {
-    // soundObject.setOnPlaybackStatusUpdate(async previewStatus => {
-    //     if (previewStatus.didJustFinish) {
-    //       console.log('El audio ha terminado!');
-    //       // Aquí puedes poner el código que quieres que se ejecute cuando el audio termine
-    //     }
-    //     // console.log(playBackState.state)
-    //     if ((playBackState.state == State.Paused) || (playBackState.state == State.Ready)) {
-    //     }else{
-    //         await soundObject.stopAsync();
-    //     }
-    //   });
-      
-    // Para cargar y reproducir el audio
     if ((playBackState.state == State.Paused) || (playBackState.state == State.Ready)) {
         try {
             if (status.isLoaded) {
@@ -83,11 +57,9 @@ async function Preview(url) {
                 await soundObject.loadAsync({uri: url});
             }
             if (status.isPlaying) {
-                
                 await soundObject.stopAsync();
                 await soundObject.unloadAsync();
                 await soundObject.loadAsync({uri: url});
-    
             }
             if (url === null) {
                 url = 'https://p.scdn.co/mp3-preview/fbef3cdacb1636624f4a3bbc2050b008414dd1d7?cid=eed31a43318f478ba48917070c9c3b37'
@@ -142,7 +114,6 @@ async function Preview(url) {
                                 )
                             break;
                         case 'Canciones':
-                            
                             return(                
                                 <View onStartShouldSetResponder={async ()=>{
                                     let url
@@ -154,38 +125,51 @@ async function Preview(url) {
 
                                     }else{
                                         // console.log('no nulo')
-                                        // await Preview(item.preview_url)
-                                    }}} onTouchEnd={async ()=>{
+                                        await Preview(item.preview_url)
+                                    }}}
+                                    onTouchEnd={async ()=>{
+                                        if (item.preview_url === null) {
+                                            url = await Shazam.search(item.name)
+                                            url = url.data[0].preview
+                                            await Preview(url)
+                                            console.log(url)
+    
+                                        }else{
+                                            // console.log('no nulo')
+                                            await Preview(item.preview_url)
+                                        }
                                         console.log('Cancion'); 
                                             songs = await Youtube.getSong(item.name, item.artists[0].name)
-                                        setIntervalId( setInterval(async () => {
                                             let cancion= await Youtube.convertSong(songs.items[0].id.videoId)
-                                            // console.log(cancion)
+                                            console.log(cancion)
+                                            // if (cancion.message == 'You have exceeded the DAILY quota for Request on your current plan, BASIC. Upgrade your plan at https://rapidapi.com/ytjar/api/youtube-mp36') {
+                                            //     console.log('error')
+                                            // }
+                                            if (cancion && cancion.message ) {
+                                                console.log('error al convertir cancion')
+                                            }
                                             if (cancion.msg=='in process') {
                                             }else{
-                                                clearInterval(intervalId)
                                             }
-                                            if (cancion.link != '') {
+                                            if (cancion.link != '' && cancion.link != undefined) {
                                                 try{
                                                     await Player.setNewSong(item.name, item.artists[0].name, item.album.images[0].url, cancion.link)
-                                                    clearInterval(intervalId)
                                                 }catch(error){
                                                     console.log(error)
                                                 }
                                             }
-                                            }, 15000));
                                         }}>
                                     <Item key={item} img={item.album.images[0].url} nombreItem={item.name} descItem={item.artists[0].name} />                        
                                 </View>
                                 )
                             break;
                         case 'Albumes':
-                            return(
-                                <View onStartShouldSetResponder={()=>console.log('Preview')} onTouchEnd={()=>console.log('Album')}>
-                                    <Item key={item} img={item.images[0].url} nombreItem={item.name} descItem={item.artists.map(artist => artist.name).join(', ')} />
-                                </View>
-                            )
-                            break;
+                                return(
+                                    <View onStartShouldSetResponder={()=>console.log('Preview')} onTouchEnd={()=>console.log('Album')}>
+                                        <Item key={item} img={item.images[0].url} nombreItem={item.name} descItem={item.artists.map(artist => artist.name).join(', ')} />
+                                    </View>
+                                )
+                                break;
                         default:
                             break;
                     }
@@ -194,10 +178,7 @@ async function Preview(url) {
                 //         <Item key={item} img={item.album.images[0].url} nombreItem={item.name} descItem={item.artists[0].name} />                        
                 //     </View>
                 // )
-            }
-
-                }
-                
+            }} 
             />    
         </View>  
     )

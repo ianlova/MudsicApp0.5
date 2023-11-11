@@ -43,7 +43,6 @@ export async function getAlbums(data) {
     .then(data => {console.log(data); return data})
     .catch(error => console.error(error));
 }
-
 export async function convertSong(id) {
     url = `https://youtube-mp36.p.rapidapi.com/dl?id=${id}`;
     const options = {

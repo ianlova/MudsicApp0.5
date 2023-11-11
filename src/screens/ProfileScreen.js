@@ -1,14 +1,15 @@
-import {View, Text, Image, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, Image, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {React, useEffect, useState} from 'react';
 import Row from '../components/Row';
 import PersonCharts from '../components/personCharts';
 import PersonTastes from '../components/personTastes';
 import { BottomTab } from '../components/Navigator';
-import * as Spotify from '../data/Spotify'
-import itemPlaylist from '../components/itemPlaylist';
+import SpotifyRecommendations from '../data/spotifyRecommendations'
+import ListPlaylist from '../components/ListPlaylist';
 import ListHistorial from '../components/listHistorial';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { GetIp } from '../backend/getIp';
  
 let id = 1
 
@@ -74,11 +75,22 @@ const generosData = [
 
 const ProfileScreen = (navigation) => {
     // let data = Spotify.SpotifyRecommendations()
+    const [userName, setUserName] = useState('Nombre Usuario')
     const [data, setData] = useState({})
-    const [userName, setUserName] = useState('')
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(`http://192.168.100.57:3001/api/usuarios/${id}`, {
+
+                async function fetchData() {
+                    const results = await SpotifyRecommendations();
+                    setData(results);
+                    console.log(results)
+                }
+                if (Object.keys(data).length === 0) {
+                    fetchData();
+                }
+        
+        
+            const response = await fetch(`http://${GetIp()}:3001/api/usuarios/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,18 +101,17 @@ const ProfileScreen = (navigation) => {
             }
             const dato = await response.json()
             setUserName(dato[0].Nbr_u)
-            setData(dato)
-            // console.log(data);
+            // setData(dato)
         };
         fetchData(); // Llama a la función asincrónica para obtener los datos
       }, []);
     
-    return(
+      return(
         <ScrollView overScrollMode="never" style={{height: 1600}}>
         <View style={ProfileStyles.container}>
             <View style={ProfileStyles.profile}>
                     <Image source={require('../imgs/800px-Clics-modernos-charly-garcia-front.jpg')} 
-                    style={ProfileStyles.profileImg}/>
+                    style={ProfileStyles.profileImg}/>                    
                     <View style={{marginLeft: 15, marginTop: -15, width: 'auto', color: 'white'}}>
                         <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{userName}</Text>
                         <View style={{flexDirection: 'row', alignItems: 'center', width: 'auto', justifyContent: 'space-between'}}>
@@ -112,22 +123,24 @@ const ProfileScreen = (navigation) => {
             <View>
                 <View style={ProfileStyles.sectionContainer}>
                     <Text style={ProfileStyles.sectionTitle}>Historial</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        <ListHistorial navigation={navigation}/>
+                    {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}> */}
+                        {/* <Row titleSection={'Historial'} data={data && data}  /> */}
+                        <ListHistorial/>
                         <Text>{}</Text>
-                    </ScrollView>
+                    {/* </ScrollView> */}
                 </View>
                 <View style={ProfileStyles.sectionContainer}>
                     <Text style={ProfileStyles.sectionTitle}>Listas de Reproducción</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        {/* <Row titleSection={''} data={data}  /> */}
                         {/* <itemPlaylist navigation={navigation} tituloSeccion="Canciones" data={data} /> */}
                     </ScrollView>
                 </View>                
             </View>
             <View style={ProfileStyles.personalidad}>
-                <Text style={{ margin: 10, fontSize: 18, fontWeight: 'bold'}}>Personalidad</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', backgroundColor: 'cyan', width: '100%'}}>
-                    <View style={{ width: '42%', ...ProfileStyles.caracteristicasYGustos }}>
+                <Text style={{ margin: 10, fontSize: 18, fontWeight: 'bold', color: '#f1f1f1'}}>Personalidad</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%', height: 600}}>
+                    <View style={{ width: '43%', ...ProfileStyles.caracteristicasYGustos }}>
                         <Text style={ProfileStyles.nombreSeccion}>Características</Text>
                         <PersonCharts titulo="Variabilidad musical" variabilidad={0.9} valorInicial="Estable" valorFinal="Variable"/>
                         <PersonCharts titulo="Duración promedio" variabilidad={0.6} valorInicial="principio" valorFinal="Final"/>
@@ -154,12 +167,14 @@ const ProfileScreen = (navigation) => {
 
 const ProfileStyles = StyleSheet.create({
     container:{
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     sectionContainer: {
-        width: '100%', // Ancho de cada sección
+        minWidth: '100%', // Ancho de cada sección
+        height: 180,
         margin: 10,
-        backgroundColor: 'white', // Color de fondo
+        backgroundColor: '#242424', // Color de fondo
         padding: 7, // Espaciado interno
         shadowColor: 'rgba(0, 0, 0, 0.2)', // Sombra
         shadowOffset: { width: 0, height: 2 },
@@ -167,44 +182,46 @@ const ProfileStyles = StyleSheet.create({
         shadowRadius: 2,
     },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 18,        
         fontWeight: 'bold',
+        color: '#f1f1f1'
     },
     profile:{
-        flexDirection: 'row',        
-        backgroundColor: 'cyan',
-        width: '75%',
-        height: 120,        
+        flexDirection: 'row',                
+        width: '100%',
+        height: 40,        
         padding: 7,        
+        justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 40,
-        marginBottom: 10
+        marginTop: 40,        
+        marginBottom: 20
     },
     profileImg:{
-        width: 100, 
-        height: 100,
+        width: 80, 
+        height: 80,
         borderRadius: 10000,
         marginTop: -10,
     },
     personalidad:{
         height: 'auto', 
         width: '100%', 
-        backgroundColor: 'blue', 
         marginHorizontal: 40, 
         alignItems: 'center',
         marginBottom: 20
     },
     nombreSeccion:{
         fontWeight: 'bold', 
-        fontSize: 16, 
+        fontSize: 16,     
+        marginTop: 20,
+        marginBottom: 2,
+        textAlign: 'center',
+        color: '#f1f1f1',
     },
     caracteristicasYGustos:{
-        backgroundColor: 'yellow', 
-        height: 300, 
+        height: 320,         
+        backgroundColor: '#141414',
         padding: 5,
         height: 'auto',
-        marginBottom: 40
-    },
+},
 })
-
-export default ProfileScreen;
+export default ProfileScreen;
